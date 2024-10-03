@@ -111,6 +111,9 @@ base_dir="$(printf "%s" "$CIRCLE_WORKING_DIRECTORY" | sed "s|~|$HOME|")"
 orb_bin_dir="${base_dir}/.circleci/orbs/circleci/ai-evals/${PLATFORM}/${ARCH}"
 org="circleci"
 repo_name="cci-$EVAL_PLATFORM-eval"
+if [ "$EVAL_PLATFORM" = "custom" ]; then
+    repo_name="cci-eval"
+fi
 # binary="${orb_bin_dir}/${repo_name}"
 # TODO: Make the version configurable via parameter
 # Don't forget the v!
@@ -121,12 +124,19 @@ case $EVAL_PLATFORM in
     "langsmith")
     binary_version="v0.0.3"
     ;;
+    "custom")
+    binary_version="v0.0.2"
+    ;;
     *)
     echo "Unknown platform: $EVAL_PLATFORM" >&2
     exit 1
     ;;
 esac
 basic_name="cci-$EVAL_PLATFORM-eval"
+if [ "$EVAL_PLATFORM" = "custom" ]; then
+    basic_name="cci-eval"
+fi
+
 binary_name="${basic_name}-${binary_version}-${PLATFORM}-${ARCH}"
 binary_zip="${orb_bin_dir}/${binary_name}.zip"
 # Where to move the binary
